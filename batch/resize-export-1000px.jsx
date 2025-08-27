@@ -1,11 +1,26 @@
+/**
+ * Script: resize-export-1000px.jsx
+ * Target: Photoshop
+ * Author: Marco Busato
+ * Description:
+ *   Resizes all input images to a maximum width of 1000px
+ *   (maintains aspect ratio, no upscaling) and exports each version
+ *   as JPG + PNG-24.
+ *
+ * Usage:
+ *   - Run the script from Photoshop
+ *   - Select the input folder with the original images
+ *   - Select the destination folder
+ */
+
 //#target photoshop
 
-var inputFolder = Folder.selectDialog("Scegli la cartella con le immagini originali");
-var outputFolder = Folder.selectDialog("Scegli la cartella di destinazione");
+var inputFolder = Folder.selectDialog("Select the folder with the original images");
+var outputFolder = Folder.selectDialog("Select the destination folder");
 
 if (inputFolder && outputFolder) {
     var files = inputFolder.getFiles(/\.(jpg|jpeg|png|tif|tiff|bmp)$/i);
-    var baseName = "nome-file-sequenziale"; // Modifica questo nome base come preferisci
+    var baseName = "sequential-file-name"; // Change this base name as you prefer
     var counter = 1;
 
     for (var i = 0; i < files.length; i++) {
@@ -14,14 +29,14 @@ if (inputFolder && outputFolder) {
 
         open(file);
 
-        // Ridimensiona larghezza a 1000px mantenendo proporzioni
+        // Resize width to 1000px while maintaining proportions
         var doc = app.activeDocument;
         var targetWidth = 1000;
         if (doc.width > targetWidth) {
             doc.resizeImage(UnitValue(targetWidth, "px"), null, null, ResampleMethod.BICUBIC);
         }
 
-        // ----------- SALVA IN JPG ------------
+        // ----------- SAVE AS JPG ------------
         var fileNameJPG = baseName + "-" + counter + ".jpg";
         var saveFileJPG = new File(outputFolder + "/" + fileNameJPG);
 
@@ -34,7 +49,7 @@ if (inputFolder && outputFolder) {
 
         doc.exportDocument(saveFileJPG, ExportType.SAVEFORWEB, jpgOptions);
 
-        // ----------- SALVA IN PNG ------------
+        // ----------- SAVE AS PNG ------------
         var fileNamePNG = baseName + "-" + counter + ".png";
         var saveFilePNG = new File(outputFolder + "/" + fileNamePNG);
 
@@ -44,13 +59,13 @@ if (inputFolder && outputFolder) {
 
         doc.exportDocument(saveFilePNG, ExportType.SAVEFORWEB, pngOptions);
 
-        // Chiude senza salvare modifiche
+        // Closes without saving changes
         doc.close(SaveOptions.DONOTSAVECHANGES);
 
         counter++;
     }
 
-    alert("Fatto! " + (counter - 1) + " immagini elaborate in JPG e PNG.");
+    alert("Done! " + (counter - 1) + " images processed in JPG and PNG.");
 } else {
-    alert("Cartelle non selezionate.");
+    alert("Folders not selected.");
 }

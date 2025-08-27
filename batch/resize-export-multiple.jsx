@@ -1,15 +1,31 @@
+/**
+ * Script: resize-export-multiple.jsx
+ * Target: Photoshop
+ * Author: Marco Busato
+ * Description:
+ *   Resizes all input images to multiple predefined widths,
+ *   avoiding upscaling, and exports each version in JPG + PNG-24.
+ *
+ * Generated sizes: 1000 → 100 px (step of 100).
+ *
+ * Usage:
+ *   - Run the script from Photoshop
+ *   - Select the input folder with the original images
+ *   - Select the destination folder
+ */
+
 //#target photoshop
 
-var inputFolder = Folder.selectDialog("Scegli la cartella con le immagini originali");
-var outputFolder = Folder.selectDialog("Scegli la cartella di destinazione");
+var inputFolder = Folder.selectDialog("Select the folder with the original images");
+var outputFolder = Folder.selectDialog("Select the destination folder");
 
 if (inputFolder && outputFolder) {
     var files = inputFolder.getFiles(/\.(jpg|jpeg|png|tif|tiff|bmp)$/i);
-    var baseName = "nome-file-sequenziale"; // Modifica questo nome base come preferisci
+    var baseName = "sequential-file-name"; // Change this base name as you prefer
     var counter = 1;
     var savedCount = 0;
 
-    // Dimensioni da generare, partendo da 1000 e decrescendo
+    // Sizes to generate, starting from 1000 and decreasing
     var sizes = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
 
     for (var i = 0; i < files.length; i++) {
@@ -21,11 +37,11 @@ if (inputFolder && outputFolder) {
         var origDoc = app.activeDocument;
         var origWidth = origDoc.width.as('px');
 
-        // Per ogni dimensione, duplichiamo il documento, ridimensioniamo (solo se non si fa upscaling)
+        // For each size, duplicate the document and resize (only if not upscaling)
         for (var s = 0; s < sizes.length; s++) {
             var targetWidth = sizes[s];
 
-            // Evitiamo l'upscaling: saltiamo la dimensione se l'immagine originale è più piccola
+            // Avoid upscaling: skip this size if the original image is smaller
             if (origWidth < targetWidth) {
                 // skip this size
                 continue;
@@ -33,10 +49,10 @@ if (inputFolder && outputFolder) {
 
             var dup = origDoc.duplicate();
 
-            // Ridimensiona larghezza a targetWidth mantenendo proporzioni
+            // Resize width to targetWidth while maintaining proportions
             dup.resizeImage(UnitValue(targetWidth, "px"), null, null, ResampleMethod.BICUBIC);
 
-            // ----------- SALVA IN JPG ------------
+            // ----------- SAVE AS JPG ------------
             var fileNameJPG = baseName + "-" + counter + "-" + targetWidth + ".jpg";
             var saveFileJPG = new File(outputFolder + "/" + fileNameJPG);
 
@@ -49,29 +65,29 @@ if (inputFolder && outputFolder) {
 
             dup.exportDocument(saveFileJPG, ExportType.SAVEFORWEB, jpgOptions);
 
-            // ----------- SALVA IN PNG ------------
+            // ----------- SAVE AS PNG ------------
             var fileNamePNG = baseName + "-" + counter + "-" + targetWidth + ".png";
             var saveFilePNG = new File(outputFolder + "/" + fileNamePNG);
 
             var pngOptions = new ExportOptionsSaveForWeb();
             pngOptions.format = SaveDocumentType.PNG;
-            pngOptions.PNG8 = false; // PNG-24 (più qualità)
+            pngOptions.PNG8 = false; // PNG-24 (higher quality
 
             dup.exportDocument(saveFilePNG, ExportType.SAVEFORWEB, pngOptions);
 
-            // Chiude la copia senza salvare modifiche
+            // PNG-24 is higher quality than PNG-8
             dup.close(SaveOptions.DONOTSAVECHANGES);
 
             savedCount += 2; // JPG + PNG
         }
 
-        // Chiude il documento originale senza salvare modifiche
+        // Closes the original document without saving changes
         origDoc.close(SaveOptions.DONOTSAVECHANGES);
 
         counter++;
     }
 
-    alert("Fatto! " + (counter - 1) + " immagini elaborate. Versioni salvate: " + savedCount + " (JPG+PNG counted separately).");
+    alert("Done! " + (counter - 1) + " images processed. Versions saved: " + savedCount + " (JPG+PNG counted separately).");
 } else {
-    alert("Cartelle non selezionate.");
+    alert("Folders not selected.");
 }
