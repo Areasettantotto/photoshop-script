@@ -10,6 +10,12 @@ designed to automate repetitive image tasks.
   Inserts a logo/brand at the bottom right of all images in a folder and its subfolders.
   ➡️ Useful for adding a consistent watermark to image sets while preserving originals and folder structure.
 
+- **`prepare-typography-package.jsx`**
+  Prepares typography packages by merging layers, setting resolution to **300 dpi**,
+  converting images to **CMYK**, and saving the result as **TIFF** files (without
+  overwriting the originals).
+  ➡️ Useful for preparing high-resolution print-ready files from multiple input formats (JPG, PNG, TIFF, BMP).
+
 - **`rename-webp.jsx`**
   Renames and copies `.webp` files using a base name + sequential number.
   ➡️ Useful for creating image sets with SEO-friendly filenames.
