@@ -6,6 +6,10 @@ designed to automate repetitive image tasks.
 
 ## 📂 Contents
 
+- **`applying-the-watermark.jsx`**
+  Inserts a logo/brand at the bottom right of all images in a folder and its subfolders.
+  ➡️ Useful for adding a consistent watermark to image sets while preserving originals and folder structure.
+
 - **`rename-webp.jsx`**
   Renames and copies `.webp` files using a base name + sequential number.
   ➡️ Useful for creating image sets with SEO-friendly filenames.
